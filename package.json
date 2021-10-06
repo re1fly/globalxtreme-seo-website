@@ -1,0 +1,49 @@
+{
+  "name": "globalxtreme-web-2021",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^2.8.0",
+    "@ntegral/react-owl-carousel": "^1.0.1",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-less": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "animate.css": "^4.1.1",
+    "aos": "^2.3.4",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
+    "font-awesome": "^4.7.0",
+    "gsap": "^3.7.1",
+    "messaging-api-telegram": "^1.0.6",
+    "moment": "^2.29.1",
+    "next": "11.1.0",
+    "react": "17.0.2",
+    "react-bootstrap": "^1.6.1",
+    "react-dom": "17.0.2",
+    "react-feather": "^2.0.9",
+    "react-google-recaptcha": "^2.1.0",
+    "react-google-recaptcha-v3": "^1.9.5",
+    "react-hook-form": "^7.15.3",
+    "react-ig-feed": "^1.0.4",
+    "react-owl-carousel": "^2.3.3",
+    "react-recaptcha": "^2.3.10",
+    "react-select": "^4.3.1",
+    "react-topbar-progress-indicator": "^4.1.0",
+    "sass": "^1.36.0",
+    "tawkto-react": "^2.0.3",
+    "webpack": "^5.47.1",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.0",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1"
+  }
+}

@@ -1,0 +1,41 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$primary-yellow: #f9c900;
+$black: #000;
+$main-grey: #f9f9f9;
+$grey-of-ui: #f5f5f5;
+$white: #fff;
+
+:root {
+  --primary-color: #fff;
+  --secondary-color: #000;
+  --text-primary-color: #000;
+  --text-yellow-to-black: #f9c900;
+  --bg-primary-page: #ffffff;
+  --bg-primary-black-and-yellow: #000;
+  --bg-grey-white: #f5f5f5;
+  --bg-grey-black-second: #f5f5f5;
+  --text-black-white: #000;
+  --nav-shadow: 0 3px 10px rgb(0 0 0 / 5%);
+  --border-color: #e7e7e7;
+}
+
+html[data-theme="dark"] {
+  --bg-primary-page: #121212;
+  --bg-primary-black-and-yellow: #f9c900;
+  --bg-grey-white: #fff;
+  --bg-grey-black-second: #171717;
+  --text-yellow-to-black: #000;
+  --text-black-white: #fff;
+  --nav-shadow: 0 3px 10px rgb(41 41 41 / 76%);
+  --border-color: #272727;
+  --primary-color: #000;
+  --text-primary-color: #fff;
+  --dark-mode-border-a: 1px solid #5e5e5e;
+}
+
+.dark-theme {
+  --secondary-color: #fff;
+  --text-primary-color: #fff;
+}

@@ -54,7 +54,7 @@ const Home = () => {
                               Nothing Beats GlobalXtreme's
                           </h2>
                           <h1 className="font-weight-bold mb-0 sTwo-t-two" data-aos="fade-up">
-                              100% OPTICAL INTERFACESSSSZZZ
+                              100% OPTICAL INTERFACE
                           </h1>
                       </div>
 

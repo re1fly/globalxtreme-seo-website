@@ -50,6 +50,23 @@ export const UIButtonChatWA = (props) => (
     </Link>
 )
 
+export const UIButtonLinkTo = (props, isBlank) => (
+    <div className="text-center">
+        <Link href={props.linkTo}>
+            <a className="btn btn-primary-yellow font-weight-bold base-box-shadow"
+               target={isBlank ? '_blank' : ''}
+               {...props.other || ''}>
+            <span className="d-flex align-items-center">
+                <span className={'mb-0 mr-2 ml-3 ' + (props.fontSize || 'h4')}>Check Speed</span>
+                <img src="/images/icon-speed.svg"
+                     className="w-icon-speed"
+                     alt="globalxtreme speedtest"/>
+            </span>
+            </a>
+        </Link>
+    </div>
+)
+
 export const UIHeadSecond = (props) => (
     <section className="space-head-second">
         <div className="container">

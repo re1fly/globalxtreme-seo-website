@@ -2,6 +2,7 @@ import {shapeGetThenByWP} from "./configAxios";
 
 export const policy = () => shapeGetThenByWP('pages/7', 'pagePolicy')
 export const visitor = () => shapeGetThenByWP('pages/26','pageVisitor')
+export const speedTest = () => shapeGetThenByWP('pages/216','pageSpeedTest')
 export const tc = () => shapeGetThenByWP('pages/33','pageTC')
 export const bill = () => shapeGetThenByWP('pages/35','pageBill')
 

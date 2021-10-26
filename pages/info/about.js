@@ -221,7 +221,7 @@ const About = ({passData = {}, contentAbout, contentVision, contentMission, cont
                     <div className="row">
                         {contentLearnMore.map(dataContent => {
                             return(
-                                <div className="col-lg-4 col-md-6 mb-3 mt-3" data-aos="fade-up" data-aos-delay="100">
+                                <div key={dataContent.title} className="col-lg-4 col-md-6 mb-3 mt-3" data-aos="fade-up" data-aos-delay="100">
                                     <UICardYellow title={dataContent.title}
                                                   atrTitle={{'data-aos': 'fade-up', 'data-aos-delay': '100'}}
                                                   atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '200'}}>

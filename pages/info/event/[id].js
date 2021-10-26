@@ -1,36 +1,57 @@
 import Layout from "../../../components/Layout";
 import {UIBlank, UIBlogOtherOwlCarousel, UIPreviewDetailEvent} from "../../../components/UIPartials";
-import {contentEvent, contentEventDetail} from "../../../content/contentWP";
+import {clientPrismic, prismicToBlogPost} from "../../../content/configPrismic";
+import Prismic from "@prismicio/client";
 
-const Event = ({passData = {}, dataEvent = []}) => {
+export async function getStaticProps(context) {
+    const dataEventById = await clientPrismic.getByUID('events', context.params.id)
+    const dataEventAll = await clientPrismic.query(
+        Prismic.Predicates.at('document.type', 'events'),
+        {orderings: '[my.events.publish_date desc]'}
+    )
+    const contentPost = dataEventAll.results.map(prismicToBlogPost)
 
+    return {
+        props: {
+            dataContent: prismicToBlogPost(dataEventById),
+            dataContents: contentPost,
+        },
+        revalidate: 10
+    }
+}
+
+export async function getStaticPaths() {
+    return {
+        paths: [],
+        fallback: 'blocking'
+    }
+}
+
+const Event = ({dataContent, dataContents}) => {
     return (
         <Layout>
             <section className="space-of-section">
                 <div className="container mt-n4 mb-5">
-                    {passData.title ?
+                    {dataContent.title ? (
                         <UIPreviewDetailEvent
                             linkBack="/info/event"
                             contentOf="Event"
-                            content={{
-                                title: passData.title ? passData.title.rendered : '',
-                                date: passData.date||'',
-                                img: passData.yoast_head_json ? passData.yoast_head_json.og_image[0].url : '',
-                                value: passData.content ? passData.content.rendered: ''
-                            }}
-                        /> : <UIBlank msg="Post blog is empty"/>}
+                            event={dataContent}
+                        />
+                    ) : <UIBlank msg="Post event is empty"/>}
                 </div>
 
                 <div className="container mb-5">
                     <div className="row">
                         <div className="col-md-12 mb-2">
-                            <h2 className="font-weight-500 color-black-white h4" data-aos="fade-up" data-aos-delay="100">
+                            <h2 className="font-weight-500 color-black-white h4" data-aos="fade-up"
+                                data-aos-delay="100">
                                 Other Article</h2>
                         </div>
 
                         <div className="col-md-12" data-aos="fade-up" data-aos-delay="200">
                             <UIBlogOtherOwlCarousel
-                                contents={dataEvent}
+                                contents={dataContents}
                                 linkDetail="/info/event/"/>
                         </div>
                     </div>
@@ -38,25 +59,6 @@ const Event = ({passData = {}, dataEvent = []}) => {
             </section>
         </Layout>
     )
-}
-
-Event.getInitialProps = async ({query}) => {
-    let passData = {}
-    await contentEventDetail(query.id)
-        .then((res) => {
-            passData =  res
-        })
-
-    let passEvents = []
-    await contentEvent()
-        .then((res) => {
-            passEvents = res
-        })
-
-    return {
-        passData: passData,
-        dataEvent: passEvents
-    }
 }
 
 export default Event

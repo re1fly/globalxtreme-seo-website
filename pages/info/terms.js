@@ -1,16 +1,33 @@
 import Layout from '../../components/Layout'
 import {UIThemeHeadSecondPageInfo} from "../../components/UIPartials";
-import {tc} from "../../content/contentWP";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
+import {clientPrismic, prismicToDataContentPage} from "../../content/configPrismic";
+import Prismic from "@prismicio/client";
+import marked from "marked";
 
-const Terms = ({passData}) => {
+export async function getStaticProps(context) {
+    const data = await clientPrismic.query(
+        Prismic.Predicates.at('my.content_page.uid', 'terms')
+    )
+    const contentPost = data.results.map(prismicToDataContentPage)
+
+    return {
+        props: {
+            contentPost
+        },
+        revalidate: 10
+    }
+}
+
+const Terms = ({contentPost}) => {
     useEffect(() => {
         $('.wp-policy p, .wp-policy h5, .wp-policy ul li').attr({
             'data-aos': "fade-up"
         });
     }, [])
 
-    const placeData = passData||{}
+    const placeData = contentPost[0]
+    const htmlContent = useMemo(() => marked(placeData.content), [placeData.content])
 
     return (
         <Layout title="GlobalXtreme | Committed to better quality">
@@ -19,21 +36,12 @@ const Terms = ({passData}) => {
             <section className="space-of-section color-black-white" data-aos="fade-up">
                 <div className="container text-break">
                     <div className="wp-policy" dangerouslySetInnerHTML={{
-                        __html: placeData.content ? placeData.content.rendered : ''}}/>
+                        __html: htmlContent ? htmlContent : ''
+                    }}/>
                 </div>
             </section>
         </Layout>
     )
-}
-
-Terms.getInitialProps = async () => {
-    let passData = {}
-    await tc()
-        .then((res) => {
-            passData =  res
-        })
-
-    return {passData: passData}
 }
 
 export default Terms

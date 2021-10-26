@@ -4,16 +4,16 @@ import Prismic from "@prismicio/client";
 import {clientPrismic, prismicToBlogPost} from "../../../content/configPrismic";
 
 export async function getStaticProps(context) {
-    const dataPrismicById = await clientPrismic.getByUID('blog_post', context.params.id)
-    const dataPrismicAll = await clientPrismic.query(
+    const dataBlogById = await clientPrismic.getByUID('blog_post', context.params.id)
+    const dataBlogAll = await clientPrismic.query(
         Prismic.Predicates.at('document.type', 'blog_post'),
         {orderings: '[my.blog_post.publish_date desc]'}
     )
-    const contentPost = dataPrismicAll.results.map(prismicToBlogPost)
+    const contentPost = dataBlogAll.results.map(prismicToBlogPost)
 
     return {
         props: {
-            dataContent: prismicToBlogPost(dataPrismicById),
+            dataContent: prismicToBlogPost(dataBlogById),
             dataContents: contentPost,
         },
         revalidate: 10

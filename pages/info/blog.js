@@ -19,9 +19,7 @@ export async function getStaticProps(context) {
 
 const HomeBlog = ({contentPost}) => {
     const dataBlog = contentPost || []
-
     const _countMin = (number) => contentPost.length >= number
-
     const _countSame = (number) => contentPost.length == number
 
     return (
@@ -40,6 +38,7 @@ const HomeBlog = ({contentPost}) => {
                                 <div className={'pr-md-2 d-flex mb-3 ' + (_countSame(1) ? 'col-md-12' : 'col-md-7')}
                                      data-aos="fade-up" data-aos-delay="100">
                                     <UICardLargeEventPrismic
+                                        urlDetail='/info/blog/'
                                         event={contentPost[0]}
                                         extraClass="card-medium border-in-dark-mode"/>
                                 </div>
@@ -48,6 +47,7 @@ const HomeBlog = ({contentPost}) => {
                                 <div className="col-md-5 pl-md-2 d-flex mb-3" data-aos="fade-up"
                                      data-aos-delay="200">
                                     <UICardLargeEventPrismic
+                                        urlDetail='/info/blog/'
                                         event={contentPost[1]}
                                         extraClass="card-medium border-in-dark-mode"/>
                                 </div>
@@ -60,6 +60,7 @@ const HomeBlog = ({contentPost}) => {
                                     (_countSame(3) ? 'col-md-12' : _countSame(4) ? 'col-md-6' : 'col-md-3')}
                                          data-aos="fade-up" data-aos-delay="250">
                                         <UICardLargeEventPrismic
+                                            urlDetail='/info/blog/'
                                             event={contentPost[2]}
                                             extraClass="card-medium border-in-dark-mode"/>
                                     </div>
@@ -69,6 +70,7 @@ const HomeBlog = ({contentPost}) => {
                                         (_countSame(4) ? 'col-md-6' : 'col-md-3')}
                                              data-aos="fade-up" data-aos-delay="300">
                                             <UICardLargeEventPrismic
+                                                urlDetail='/info/blog/'
                                                 event={contentPost[3]}
                                                 extraClass="card-medium border-in-dark-mode"/>
                                         </div>
@@ -78,6 +80,7 @@ const HomeBlog = ({contentPost}) => {
                                         <div className="col-md-6 pl-md-2 d-flex mb-3"
                                              data-aos="fade-up" data-aos-delay="300">
                                             <UICardLargeEventPrismic
+                                                urlDetail='/info/blog/'
                                                 event={contentPost[4]}
                                                 extraClass="card-medium border-in-dark-mode"/>
                                         </div>

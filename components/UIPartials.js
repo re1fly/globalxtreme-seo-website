@@ -209,11 +209,11 @@ export const UICardLargeEvent = ({event, extraClass, handleLink, extraClassTitle
     </div>
 )
 
-export function UICardLargeEventPrismic({event, extraClass, extraClassTitle}) {
+export function UICardLargeEventPrismic({event, extraClass, extraClassTitle, urlDetail}) {
     const route = useRouter()
     return (
         <div className={'card bg-dark base-box-shadow wp-card-blog ' + extraClass}
-             onClick={() => route.push('/info/blog/' + event.id)}
+             onClick={() => route.push(urlDetail + event.id)}
         >
             <div className="bg-black-overlay">
                 <img src={event.image.url}
@@ -226,7 +226,7 @@ export function UICardLargeEventPrismic({event, extraClass, extraClassTitle}) {
                     <div className="col-md-12 text-shadow">
                         <h2 className={`font-weight-500 mb-0 mb-md-2 ${extraClassTitle}`} data-toggle="tooltip"
                             data-placement="right" title={event.title}>{event.title}</h2>
-                        <p className="mb-0 small">{event.date}</p>
+                        <p className="mb-0 small">{datePost(event.date)}</p>
                     </div>
                 </div>
             </div>
@@ -257,7 +257,7 @@ export function UIPreviewDetailEvent({linkBack, contentOf, event}) {
 
             <div className="col-md-12 mb-3 text-black-white">
                 <h1 className="font-weight-600" data-aos="fade-up" data-aos-delay="100">{event.title}</h1>
-                <p className="small" data-aos="fade-up" data-aos-delay="200">{event.date}</p>
+                <p className="small" data-aos="fade-up" data-aos-delay="200">{datePost(event.date)}</p>
             </div>
 
             <div className="col-md-12 d-flex mb-5">

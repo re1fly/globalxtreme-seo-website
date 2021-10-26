@@ -1,17 +1,12 @@
 import Layout from "../../components/Layout";
 import {UICardYellow, UIHeadSecond} from '../../components/UIPartials'
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useMemo} from "react";
 import {useLayoutContext} from "../../components/MainContext";
-import {
-    aboutGXCardCommitment, aboutGXCardConnect,
-    aboutGXCardCorporate,
-    aboutGXMission,
-    aboutGXPartOne,
-    aboutGXPartTwo,
-    aboutGXVision
-} from "../../content/infoAbout";
 import InstagramFeed from '../../components/InstagramFeed'
 import {getFeeds} from "../../content/contentIG";
+import {clientPrismic, prismicToBlogPost, prismicToDataContentPage} from "../../content/configPrismic";
+import Prismic from "@prismicio/client";
+import marked from "marked";
 
 const UIContentTitle = ({title, children, cssSpace, atrTitle = {}, atrChild = {}}) => (
     <>
@@ -35,10 +30,48 @@ const _getFeeds = (count = '', tokenAfter = '') => {
         })
 }
 
-const About = ({passData = {}}) => {
+export async function getStaticProps(context) {
+    const dataAbout = await clientPrismic.query(
+        Prismic.Predicates.at('my.content_page_about_us.uid', 'gx-about')
+    )
+
+    const dataVision = await clientPrismic.query(
+        Prismic.Predicates.at('my.content_page_about_us.uid', 'gx-vision')
+    )
+
+    const dataMission = await clientPrismic.query(
+        Prismic.Predicates.at('my.content_page_about_us.uid', 'gx-mission')
+    )
+
+    const dataLearnMore = await clientPrismic.query(
+        Prismic.Predicates.at('document.type', 'about_learn_more'),
+        {orderings: '[my.about_learn_more.publish_date desc]'}
+    )
+
+    const contentAbout = dataAbout.results.map(prismicToBlogPost)
+    const contentVision = dataVision.results.map(prismicToBlogPost)
+    const contentMission = dataMission.results.map(prismicToBlogPost)
+    const contentLearnMore = dataLearnMore.results.map(prismicToDataContentPage)
+
+    return {
+        props: {
+            contentAbout,
+            contentVision,
+            contentMission,
+            contentLearnMore,
+            passData: await _getFeeds(12) || []
+        },
+        revalidate: 10,
+    }
+}
+
+const About = ({passData = {}, contentAbout, contentVision, contentMission, contentLearnMore}) => {
     const [dataFeeds, setDataFeeds] = useState(passData.data || [])
     const [paginationFeed, setPaginationFeed] = useState(passData.paging||{})
     const [isLoading, setIsLoading] = useState(false)
+    const dataOfAbout = contentAbout[0]
+    const dataOfVision = contentVision[0]
+    const dataOfMission = contentMission[0]
 
     const {isModeDark} = useLayoutContext()
     let iconHeadBlack = '/images/icon-about-black.png'
@@ -70,6 +103,8 @@ const About = ({passData = {}}) => {
         setPaginationFeed(data)
     }, [paginationFeed])
 
+    const aboutUsContent = useMemo(() => marked(dataOfAbout.content), [dataOfAbout.content])
+
     return (
         <Layout title="About GlobalXtreme">
             <UIHeadSecond
@@ -93,21 +128,16 @@ const About = ({passData = {}}) => {
                     <div className="row mb-5  row-from-right" data-aos="fade-up">
                         <div className="col-md-5 float-left mb-3">
                             <div className="card border-0 bg-white-black-secondary b-rad-10 overflow-hidden about-shadow-img">
-                                <img src="/images/about-gx.jpg" alt="about globalxtreme"/>
+                                <img src={dataOfAbout.image.url} alt="about globalxtreme"/>
                             </div>
                         </div>
                         <div className="col-md-7 float-right pl-md-4">
                             <UIContentTitle title="GlobalXtreme"
                                        atrTitle={{'data-aos': 'fade-up'}}
                                        atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '100'}}>
-                                {aboutGXPartOne()}
+                                <div dangerouslySetInnerHTML={{
+                                    __html: aboutUsContent ? aboutUsContent : '' }}/>
                             </UIContentTitle>
-                        </div>
-                        <div className="col-lg-7 col-md-12 float-right pl-lg-4"
-                             data-aos="fade-up"
-                             data-aos-anchor-placeme="top-top">
-                            <p className="small font-weight-light">
-                                {aboutGXPartTwo()}</p>
                         </div>
                     </div>
 
@@ -115,7 +145,7 @@ const About = ({passData = {}}) => {
                         <div className="col-lg-7 col-md-6 float-right pl-lg-5 pr-lg-5">
                             <div className="card border-0 bg-white-black-secondary b-rad-10 overflow-hidden about-shadow-img"
                                  data-aos="fade-up" data-aos-delay="0">
-                                <img src="/images/about-visi-mission-gx.jpg" alt="vision and mission globalxtreme"/>
+                                <img src={dataOfMission.image.url} alt="vision and mission globalxtreme"/>
                             </div>
                         </div>
 
@@ -123,7 +153,7 @@ const About = ({passData = {}}) => {
                             <UIContent title="Our Vision"
                                        atrTitle={{'data-aos': 'fade-up'}}
                                        atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '150'}}>
-                                {aboutGXVision()}
+                                {dataOfVision.content}
                             </UIContent>
                         </div>
 
@@ -135,7 +165,7 @@ const About = ({passData = {}}) => {
                                            'data-aos-delay': '100',
                                            'data-aos-anchor': '.anchor-our-mission'
                                        }}>
-                                {aboutGXMission()}
+                                {dataOfMission.content}
                             </UIContent>
                         </div>
 
@@ -152,11 +182,11 @@ const About = ({passData = {}}) => {
                         <div className="col-lg-5 col">
                             <div className="row">
                                 <div className="col-lg-12 float-right mb-3" data-aos="fade-up">
-                                    <UIContent title="Our Vision">{aboutGXVision()}</UIContent>
+                                    <UIContent title="Our Vision">{dataOfVision.content}</UIContent>
                                 </div>
 
                                 <div className="col-lg-12" data-aos="fade-up">
-                                    <UIContent title="Our Mission">{aboutGXMission()}</UIContent>
+                                    <UIContent title="Our Mission">{dataOfMission.content}</UIContent>
                                 </div>
                             </div>
                         </div>
@@ -189,28 +219,17 @@ const About = ({passData = {}}) => {
                     </div>
 
                     <div className="row">
-                        <div className="col-lg-4 col-md-6 mb-3 mt-3" data-aos="fade-up" data-aos-delay="100">
-                            <UICardYellow title="Corporate Culture"
-                                          atrTitle={{'data-aos': 'fade-up', 'data-aos-delay': '100'}}
-                                          atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '200'}}>
-                                {aboutGXCardCorporate()}
-                            </UICardYellow>
-                        </div>
-
-                        <div className="col-lg-4 col-md-6 mb-3 mt-3" data-aos="fade-up" data-aos-delay="200">
-                            <UICardYellow title="Our Commitment"
-                                          atrTitle={{'data-aos': 'fade-up', 'data-aos-delay': '200'}}
-                                          atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '300'}}>
-                                {aboutGXCardCommitment()}
-                            </UICardYellow>
-                        </div>
-
-                        <div className="col-lg-4 col-md-12 mb-3 mt-3" data-aos="fade-up" data-aos-delay="300">
-                            <UICardYellow title="Connection Service"
-                                          atrTitle={{'data-aos': 'fade-up', 'data-aos-delay': '300'}}
-                                          atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '400'}}
-                            >{aboutGXCardConnect()}</UICardYellow>
-                        </div>
+                        {contentLearnMore.map(dataContent => {
+                            return(
+                                <div className="col-lg-4 col-md-6 mb-3 mt-3" data-aos="fade-up" data-aos-delay="100">
+                                    <UICardYellow title={dataContent.title}
+                                                  atrTitle={{'data-aos': 'fade-up', 'data-aos-delay': '100'}}
+                                                  atrChild={{'data-aos': 'fade-up', 'data-aos-delay': '200'}}>
+                                        {dataContent.content}
+                                    </UICardYellow>
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </section>
@@ -239,10 +258,6 @@ const About = ({passData = {}}) => {
             </section>
         </Layout>
     )
-}
-
-About.getInitialProps = async () => {
-    return {passData: await _getFeeds(12) || []}
 }
 
 export default About

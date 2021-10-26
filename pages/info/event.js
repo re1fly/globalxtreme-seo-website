@@ -1,17 +1,25 @@
 import Layout from "../../components/Layout";
-import {contentEvent} from "../../content/contentWP";
-import {UIBlogOtherOwlCarousel, UICardLargeEvent, UIBlank} from '../../components/UIPartials'
-import {useRouter} from "next/router";
+import {UIBlogOtherOwlCarousel, UIBlank, UICardLargeEventPrismic} from '../../components/UIPartials'
+import {clientPrismic, prismicToBlogPost} from "../../content/configPrismic";
+import Prismic from "@prismicio/client";
 
-const HomeEvent = ({dataEvent = []}) => {
-    const route = useRouter()
-
-    const _handleDetail = (eventId) => {
-        route.push('/info/event/' + eventId)
+export async function getStaticProps(context) {
+    const dataPrismic = await clientPrismic.query(
+        Prismic.Predicates.at('document.type', 'events'),
+        {orderings: '[my.events.publish_date desc]'}
+    )
+    const eventPost = dataPrismic.results.map(prismicToBlogPost)
+    return {
+        props: {
+            eventPost,
+        },
+        revalidate: 10
     }
+}
 
-    const _countMin = (number) => dataEvent.length >= number
-    const _countSame = (number) => dataEvent.length == number
+const HomeEvent = ({eventPost}) => {
+    const _countMin = (number) => eventPost.length >= number
+    const _countSame = (number) => eventPost.length == number
 
     return (
         <Layout>
@@ -24,44 +32,48 @@ const HomeEvent = ({dataEvent = []}) => {
                         </div>
                     </div>
 
-                    {dataEvent.length ? (
+                    {eventPost.length ? (
                         <div className="row mb-3">
                             <div className="col-md-12 d-flex mb-3" data-aos="fade-up" data-aos-delay="100">
-                                <UICardLargeEvent event={dataEvent[0]}
-                                                  extraClass="card-large border-in-dark-mode"
-                                                  handleLink={() => _handleDetail(dataEvent[0].id)}/>
+                                <UICardLargeEventPrismic
+                                    urlDetail='/info/event/'
+                                    event={eventPost[0]}
+                                    extraClass="card-large border-in-dark-mode"/>
                             </div>
 
                             {_countMin(2) ? (
                                 <div className={'pr-md-2 d-flex mb-3 ' +
-                                (_countSame(2) ? 'col-md-12' : 'col-md-7 ')} data-aos="fade-up"data-aos-delay="200">
-                                    <UICardLargeEvent event={dataEvent[1]}
-                                                      extraClass="card-medium border-in-dark-mode"
-                                                      handleLink={() => _handleDetail(dataEvent[1].id)}/>
+                                (_countSame(2) ? 'col-md-12' : 'col-md-7 ')} data-aos="fade-up" data-aos-delay="200">
+                                    <UICardLargeEventPrismic
+                                        urlDetail='/info/event/'
+                                        event={eventPost[1]}
+                                        extraClass="card-large border-in-dark-mode"/>
                                 </div>
                             ) : null}
 
                             {_countMin(3) ? (
                                 <div className="col-md-5 pl-md-2 d-flex mb-3" data-aos="fade-up" data-aos-delay="250">
-                                    <UICardLargeEvent event={dataEvent[2]}
-                                                      extraClass="card-medium border-in-dark-mode"
-                                                      handleLink={() => _handleDetail(dataEvent[2].id)}/>
+                                    <UICardLargeEventPrismic
+                                        urlDetail='/info/event/'
+                                        event={eventPost[2]}
+                                        extraClass="card-large border-in-dark-mode"/>
                                 </div>
                             ) : null}
                         </div>
                     ) : <UIBlank msg="Post event is empty"/>}
                 </div>
 
-                {dataEvent.length ? (
+                {eventPost.length ? (
                     <div className="container mb-5">
                         <div className="row">
                             <div className="col-md-12 mb-2">
-                                <h3 className="font-weight-500 color-black-white h4" data-aos="fade-up" data-aos-delay="100">Other Article</h3>
+                                <h3 className="font-weight-500 color-black-white h4" data-aos="fade-up"
+                                    data-aos-delay="100">Other Article</h3>
                             </div>
 
                             <div className="col-md-12" data-aos="fade-up" data-aos-delay="200">
                                 <UIBlogOtherOwlCarousel
-                                    contents={dataEvent}
+                                    contents={eventPost}
                                     linkDetail="/info/event/"/>
                             </div>
                         </div>
@@ -70,16 +82,6 @@ const HomeEvent = ({dataEvent = []}) => {
             </section>
         </Layout>
     )
-}
-
-HomeEvent.getInitialProps = async () => {
-    let passData = []
-    await contentEvent()
-        .then((res) => {
-            passData =  res
-        })
-
-    return {dataEvent: passData}
 }
 
 export default HomeEvent

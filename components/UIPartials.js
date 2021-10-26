@@ -1,4 +1,4 @@
-import React, {memo, useEffect} from "react";
+import React, {memo, useEffect, useMemo} from "react";
 import Link from "next/link";
 import * as Icon from 'react-feather'
 import {findAddress} from '../config/locations'
@@ -9,11 +9,12 @@ import {URL_APP_STORE, URL_MOBILE_STORE} from '../config/urls'
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import {getLinkRedirectWA} from "../config/whatsappNumber";
-
+import {useRouter} from "next/router";
+import marked from 'marked'
 
 const OwlCarousel = dynamic(() => {
     return import ('react-owl-carousel')
-}, { ssr: false })
+}, {ssr: false})
 
 export const UIAppStoreIcon = ({extraClass = ' w-75'}) => (
     <div className={extraClass}>
@@ -39,9 +40,9 @@ export const UIAppStoreIcon = ({extraClass = ' w-75'}) => (
 export const UIButtonChatWA = (props) => (
     <Link href={getLinkRedirectWA()}>
         <a className="btn btn-primary-yellow font-weight-bold base-box-shadow"
-           {...props.other||''}>
+           {...props.other || ''}>
             <span className="d-flex align-items-center">
-                <span className={'mb-0 mr-2 ' + (props.fontSize||'h4')}>Chat With Sales</span>
+                <span className={'mb-0 mr-2 ' + (props.fontSize || 'h4')}>Chat With Sales</span>
                 <img src="/images/icon-whatsapp.svg"
                      className="w-icon-wa"
                      alt="globalxtreme whatsapp"/>
@@ -71,12 +72,12 @@ export const UIHeadSecond = (props) => (
     <section className="space-head-second">
         <div className="container">
             <div className="row d-flex align-items-center justify-content-center">
-                <div className={'col-md-5 ' + (props.extraCssLeft||'')}>
+                <div className={'col-md-5 ' + (props.extraCssLeft || '')}>
                     {props.partLeft}
                 </div>
 
                 <div className="col-md-7 d-flex justify-content-center">
-                    {props.contentRight||''}
+                    {props.contentRight || ''}
                 </div>
             </div>
         </div>
@@ -86,8 +87,8 @@ export const UIHeadSecond = (props) => (
 export const UICardYellow = memo((props) => (
     <div className="card card-package-loved bg-primary-yellow h-100">
         <div className="card-body">
-            <h3 className="text-center font-weight-bolder h4" {...props.atrTitle||''}>{props.title}</h3>
-            <p className="small text-center mb-0" {...props.atrChild||''}>
+            <h3 className="text-center font-weight-bolder h4" {...props.atrTitle || ''}>{props.title}</h3>
+            <p className="small text-center mb-0" {...props.atrChild || ''}>
                 {props.children}
             </p>
         </div>
@@ -97,7 +98,7 @@ export const UICardYellow = memo((props) => (
 export const UIAddressLocation = memo((props) => (
     <p className="footer-size-text-under font-weight-light mb-0"
        data-aos="fade-up" data-aos-delay="200"
-       dangerouslySetInnerHTML= {{
+       dangerouslySetInnerHTML={{
            __html: findAddress(props.id).address
        }}/>
 ))
@@ -108,7 +109,7 @@ export const UISectionPackage = ({children, title, extraClassRow = '', cssTitle 
         <div className="container pb-5">
             <div className={"row mb-5 " + (extraClassRow)}>
                 <div className="col-md-12 d-flex justify-content-center mb-5">
-                    <div className={cssTitle||'block-title-product h5'} data-aos="zoom-in">{title}</div>
+                    <div className={cssTitle || 'block-title-product h5'} data-aos="zoom-in">{title}</div>
                 </div>
                 {children}
             </div>
@@ -125,12 +126,11 @@ export const UICardPackage = (props) => (
                      className="img-speed w-75"
                      alt="globalxtreme icon speed"/>
                 <div className="text-center package-top-min">
-                    <p className="fs-dot-8-rem mb-0">{props.type||'speeds up to'}</p>
+                    <p className="fs-dot-8-rem mb-0">{props.type || 'speeds up to'}</p>
                     <p className="display-4 font-weight-600 mb-0">{props.speed}</p>
-                    <p className="fs-dot-9-rem mb-0">{props.unit||'Mbps'}</p>
+                    <p className="fs-dot-9-rem mb-0">{props.unit || 'Mbps'}</p>
                 </div>
             </div>
-
 
 
             <p className="text-center font-weight-light fs-dot-8-rem">
@@ -142,7 +142,7 @@ export const UICardPackage = (props) => (
             </p>
 
         </div>
-        <div className={'card-footer block-footer ' + (props.bgFooter||'bg-primary-yellow')}>
+        <div className={'card-footer block-footer ' + (props.bgFooter || 'bg-primary-yellow')}>
             {props.prices}
         </div>
     </div>
@@ -155,7 +155,7 @@ export const UICardPackageTV = (props) => (
                 {props.title}
             </p>
         </div>
-        <div className={'card-footer block-footer ' + (props.bgFooter||'bg-primary-yellow')}>
+        <div className={'card-footer block-footer ' + (props.bgFooter || 'bg-primary-yellow')}>
             {props.prices}
         </div>
     </div>
@@ -189,7 +189,7 @@ export const UIThemeHeadSecondPageInfo = ({title}) => {
 
 
 // UI CARD EVENT OR BLOG
-export const UICardLargeEvent = ({event, extraClass, handleLink = () => {}}) => (
+export const UICardLargeEvent = ({event, extraClass, handleLink, extraClassTitle}) => (
     <div className={'card bg-dark base-box-shadow wp-card-blog ' + extraClass}
          onClick={handleLink}>
         <div className="bg-black-overlay">
@@ -200,7 +200,8 @@ export const UICardLargeEvent = ({event, extraClass, handleLink = () => {}}) => 
         <div className="card-img-overlay d-flex align-items-end">
             <div className="row pl-0 pb-0 pl-md-3 pb-md-3">
                 <div className="col-md-12 text-shadow">
-                    <h2 className="font-weight-500 mb-0 mb-md-2">{event.title.rendered}</h2>
+                    <h2 className={`font-weight-500 mb-0 mb-md-2 ${extraClassTitle}`} data-toggle="tooltip"
+                        data-placement="right" title={event.title.rendered}>{event.title.rendered}</h2>
                     <p className="mb-0 small">{datePost(event.date)}</p>
                 </div>
             </div>
@@ -208,13 +209,39 @@ export const UICardLargeEvent = ({event, extraClass, handleLink = () => {}}) => 
     </div>
 )
 
-export const UIPreviewDetailEvent = ({linkBack, contentOf, content}) => {
+export function UICardLargeEventPrismic({event, extraClass, extraClassTitle}) {
+    const route = useRouter()
+    return (
+        <div className={'card bg-dark base-box-shadow wp-card-blog ' + extraClass}
+             onClick={() => route.push('/info/blog/' + event.id)}
+        >
+            <div className="bg-black-overlay">
+                <img src={event.image.url}
+                     alt={event.image.alt}
+                     loading="lazy"
+                     className="card-img bg-black-overlay"/>
+            </div>
+            <div className="card-img-overlay d-flex align-items-end">
+                <div className="row pl-0 pb-0 pl-md-3 pb-md-3">
+                    <div className="col-md-12 text-shadow">
+                        <h2 className={`font-weight-500 mb-0 mb-md-2 ${extraClassTitle}`} data-toggle="tooltip"
+                            data-placement="right" title={event.title}>{event.title}</h2>
+                        <p className="mb-0 small">{event.date}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export function UIPreviewDetailEvent({linkBack, contentOf, event}) {
     useEffect(() => {
         $('.wp-aos p, .wp-aos h6, .wp-aos h2, .wp-aos h3, .wp-aos h4, .wp-aos h5, .wp-aos h6,' +
             ' .wp-aos ul li,  .wp-aos ol li, .wp-aos h5 ol li').attr({
             'data-aos': "fade-up"
         });
     }, [])
+    const htmlContent = useMemo(() => marked(event.content), [event.content])
 
     return (
         <div className="row">
@@ -224,30 +251,31 @@ export const UIPreviewDetailEvent = ({linkBack, contentOf, content}) => {
                         <Link href={linkBack}><a className="">{contentOf}</a></Link>
                     </li>
                     <li className="breadcrumb-item active" data-aos="zoom-in" data-aos-delay="100"
-                        aria-current="page">{content.title}</li>
+                        aria-current="page">{event.title}</li>
                 </ol>
             </div>
 
             <div className="col-md-12 mb-3 text-black-white">
-                <h1 className="font-weight-600" data-aos="fade-up" data-aos-delay="100">{content.title}</h1>
-                <p className="small" data-aos="fade-up" data-aos-delay="200">{datePost(content.date)}</p>
+                <h1 className="font-weight-600" data-aos="fade-up" data-aos-delay="100">{event.title}</h1>
+                <p className="small" data-aos="fade-up" data-aos-delay="200">{event.date}</p>
             </div>
 
             <div className="col-md-12 d-flex mb-5">
                 <div className="card wp-card-blog-detail overflow-hidden border-in-dark-mode"
                      data-aos="fade-up" data-aos-delay="250">
-                    <img src={content.img} alt={content.title}/>
+                    <img src={event.image.url} alt={event.image.alt}/>
                 </div>
             </div>
 
             <div className="col-md-12">
-                <div className="text-black-white wp-policy wp-aos" dangerouslySetInnerHTML={{__html: content.value || ''}}></div>
+                <div className="text-black-white wp-policy wp-aos"
+                     dangerouslySetInnerHTML={{__html: htmlContent || ''}}></div>
             </div>
         </div>
     )
 }
 
-export const UIBlogOtherOwlCarousel = ({contents = [], linkDetail}) => (
+export const UIBlogOtherOwlCarousel = ({contents, linkDetail}) => (
     <OwlCarousel item={3}
                  loop
                  autoplay={true}
@@ -255,20 +283,20 @@ export const UIBlogOtherOwlCarousel = ({contents = [], linkDetail}) => (
                  lazyContent={true}
                  navContainerClass="owl-nav owl-nav-center disabled"
                  dotClass="owl-dots disabled"
-                 responsive = {
+                 responsive={
                      {
-                         0:{items: 1},
-                         576:{items: 1},
-                         1200:{items: 3},
-                         1500:{items: 3},
-                         1750:{items: 3}
+                         0: {items: 1},
+                         576: {items: 1},
+                         1200: {items: 3},
+                         1500: {items: 3},
+                         1750: {items: 3}
                      }
                  }
                  className="owl-theme ">
         {contents.map((content, index) => {
-            let title = content.title ? content.title.rendered : ''
+            let title = content.title ? content.title : ''
             let date = content.date ? datePost(content.date) : ''
-            let urlImg = content.yoast_head_json ? content.yoast_head_json.og_image[0].url : ''
+            let urlImg = content.image.url ? content.image.url : ''
 
             return (
                 <div className="item p-2" key={index}>

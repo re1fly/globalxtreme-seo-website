@@ -1,4 +1,6 @@
 import {shapeGetThenByWP} from "./configAxios";
+import Prismic from "@prismicio/client";
+import {URL_BASE_PRISMIC} from "../config/urls";
 
 export const policy = () => shapeGetThenByWP('pages/7', 'pagePolicy')
 export const visitor = () => shapeGetThenByWP('pages/26','pageVisitor')
@@ -15,3 +17,5 @@ export const contentEventDetail = (eventId) => shapeGetThenByWP('events/' + even
 export const faqs = () => shapeGetThenByWP('frequently-asked', 'faqs')
 
 export const jobCareer = () => shapeGetThenByWP('job-vacancy', 'faqs')
+
+

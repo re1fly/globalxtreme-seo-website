@@ -30,6 +30,7 @@ const App = ({Component, pageProps}) => {
                 duration: 1000
             }
         );
+
     }, []);
 
     const [progress, setProgress] = useState(false)

@@ -10,7 +10,7 @@ const SpeedTest = () => (
 
         <iframe width="100%" height="650px"
                 frameBorder="0"
-                src="https://globalxtreme.speedtestcustom.com/"></iframe>
+                src="https://globalxtreme.speedtestcustom.com/"/>
     </Layout>
 )
 

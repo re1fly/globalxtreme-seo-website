@@ -1,8 +1,9 @@
 import axios from 'axios'
-import {API_IG, URL_BASE_WP_CONTENT} from '../config/urls'
+import {API_IG, URL_BASE_PRISMIC, URL_BASE_WP_CONTENT} from '../config/urls'
 
 const keyCancel = {}
 const CancelToken = axios.CancelToken;
+
 export function useCancelToken(parentName) {
     if (keyCancel[parentName]) {
         keyCancel[parentName]()
@@ -41,7 +42,7 @@ export async function get(baseURL = '', url, others = {}) {
 
 
 export function shapeGetThen(baseURL, url, tokenCancel = '') {
-    const others = tokenCancel ? {...useCancelToken('tokenCancel-'+tokenCancel)} : {}
+    const others = tokenCancel ? {...useCancelToken('tokenCancel-' + tokenCancel)} : {}
     return get(baseURL, url)
         .then((res) => {
             return res.data
@@ -61,8 +62,7 @@ export function shapeGetThen(baseURL, url, tokenCancel = '') {
 
 // SET UP BY GROUP
 export function shapeGetThenByWP(url, tokenCancel = '') {
-    const baseURLWP = URL_BASE_WP_CONTENT
-    const others = tokenCancel ? {...useCancelToken('tokenCancel-'+tokenCancel)} : {}
+    const others = tokenCancel ? {...useCancelToken('tokenCancel-' + tokenCancel)} : {}
     return get(URL_BASE_WP_CONTENT, url)
         .then((res) => {
             return res.data
@@ -81,9 +81,7 @@ export function shapeGetThenByWP(url, tokenCancel = '') {
 
 
 export function shapeGetThenByIG(url, tokenCancel = '') {
-    const baseURLWP = API_IG
-
-    return get(baseURLWP, url)
+    return get(API_IG, url)
         .then((res) => {
             return res.data
         })

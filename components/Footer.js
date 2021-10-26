@@ -94,7 +94,6 @@ const Footer = () => {
                                 <UIShapeLinkInfo name="Career" url="/info/career"/>
                                 <UIShapeLinkInfo name="Speed Test" url="https://globalxtreme.speedtestcustom.com/"
                                                  isBlank={true}/>
-
                                 <li className="mt-4 d-flex" data-aos="fade-up" data-aos-delay="100">
                                     <div className="input-wrap switch-btn-animate d-flexP Pjustify-content-center">
                                         <input id="switchDarkMode" type="checkbox"

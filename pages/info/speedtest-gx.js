@@ -7,11 +7,11 @@ import {speedTest, visitor} from "../../content/contentWP";
 const SpeedTestInfo = ({passData}) => {
     const placeData = passData || {}
 
-    useEffect(() => {
-        $('.wp-policy p, .wp-policy h5, .wp-policy ul li').attr({
-            'data-aos': "fade-up"
-        });
-    }, []);
+    // useEffect(() => {
+    //     $('.wp-policy p, .wp-policy h5, .wp-policy ul li').attr({
+    //         'data-aos': "fade-up"
+    //     });
+    // }, []);
 
     return (
         <Layout title="GlobalXtreme | Commited to better quality">

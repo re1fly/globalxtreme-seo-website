@@ -6,5 +6,6 @@ export const URL_GX_FB = 'https://www.facebook.com/GlobalXtremeNet'
 export const URL_GX_TW = 'https://twitter.com/GlobalXtreme'
 
 export const URL_BASE_WP_CONTENT = 'https://wordpress-347545-2110058.cloudwaysapps.com/wp-json/wp/v2/'
+export const URL_BASE_PRISMIC = 'https://gxwebtest.prismic.io/api/v2'
 
 export const API_IG = 'https://graph.instagram.com/'
